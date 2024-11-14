@@ -93,6 +93,12 @@ func (v *Vehicle) Validate() error {
     return nil
 }
 
+func (v *Vehicle) Build() error {
+    v.CreatedAt = time.Now()
+    v.UpdatedAt = time.Now()
+    return v.Validate()
+}
+
 func (v *Vehicle) Check() error {
     if v.ID.IsZero() {
         return ErrIDMissing

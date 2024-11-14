@@ -110,9 +110,13 @@ func (u *User) Validate() error {
     if err := u.Role.Validate(); err != nil {
         return err
     }
+    return nil
+}
+
+func (u *User) Build() error {
     u.CreatedAt = time.Now()
     u.UpdatedAt = time.Now()
-    return nil
+    return u.Validate()
 }
 
 func (u *User) Check() error {
@@ -125,10 +129,7 @@ func (u *User) Check() error {
     if u.UpdatedAt.IsZero() {
         return ErrUpdatedAtMissing
     }
-    if err := u.Validate(); err != nil {
-        return err
-    }
-    return nil
+    return u.Validate()
 }
 
 func (u *User) Claim() *jwt.StandardClaims {
