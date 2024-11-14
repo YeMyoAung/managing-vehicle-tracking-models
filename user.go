@@ -6,7 +6,7 @@ import (
     "time"
 
     "github.com/dgrijalva/jwt-go"
-    common "github.com/yemyoaung/managing-vehicle-tracking-common"
+    "github.com/yemyoaung/managing-vehicle-tracking-common"
     "go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -65,6 +65,7 @@ type User struct {
     Role      Role               `json:"role" bson:"role"`
     CreatedAt time.Time          `json:"created_at" bson:"created_at"`
     UpdatedAt time.Time          `json:"updated_at" bson:"updated_at"`
+    DeletedAt *time.Time         `json:"deleted_at,omitempty" bson:"deleted_at,omitempty"`
 }
 
 func NewUser() *User {
