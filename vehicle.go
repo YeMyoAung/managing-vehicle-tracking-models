@@ -40,11 +40,15 @@ type Vehicle struct {
     VehicleName   string             `json:"vehicle_name" bson:"vehicle_name"`
     VehicleModel  string             `json:"vehicle_model" bson:"vehicle_model"`
     VehicleStatus VehicleStatus      `json:"vehicle_status" bson:"vehicle_status"`
-    Mileage       int                `json:"mileage" bson:"mileage"`
-    LicenseNumber string             `json:"license_number" bson:"license_number"`
-    CreatedAt     time.Time          `json:"created_at" bson:"created_at"`
-    UpdatedAt     time.Time          `json:"updated_at" bson:"updated_at"`
-    DeletedAt     *time.Time         `json:"deleted_at,omitempty" bson:"deleted_at,omitempty"`
+    // since mileage can be a float value and it can be a large number, we will use float64
+    Mileage       float64    `json:"mileage" bson:"mileage"`
+    LicenseNumber string     `json:"license_number" bson:"license_number"`
+    CreatedAt     time.Time  `json:"created_at" bson:"created_at"`
+    UpdatedAt     time.Time  `json:"updated_at" bson:"updated_at"`
+    DeletedAt     *time.Time `json:"deleted_at,omitempty" bson:"deleted_at,omitempty"`
+    // we can add created_by, updated_by, deleted_by fields here
+    // to track who created, updated, deleted the vehicle
+    // but for now, we will skip it.
 }
 
 func NewVehicle() *Vehicle {
@@ -66,7 +70,7 @@ func (v *Vehicle) SetVehicleStatus(status VehicleStatus) *Vehicle {
     return v
 }
 
-func (v *Vehicle) SetMileage(mileage int) *Vehicle {
+func (v *Vehicle) SetMileage(mileage float64) *Vehicle {
     v.Mileage = mileage
     return v
 }
@@ -94,7 +98,9 @@ func (v *Vehicle) Validate() error {
 }
 
 func (v *Vehicle) Build() error {
-    v.CreatedAt = time.Now()
+    if v.CreatedAt.IsZero() {
+        v.CreatedAt = time.Now()
+    }
     v.UpdatedAt = time.Now()
     return v.Validate()
 }

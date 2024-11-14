@@ -114,7 +114,9 @@ func (u *User) Validate() error {
 }
 
 func (u *User) Build() error {
-    u.CreatedAt = time.Now()
+    if u.CreatedAt.IsZero() {
+        u.CreatedAt = time.Now()
+    }
     u.UpdatedAt = time.Now()
     return u.Validate()
 }
