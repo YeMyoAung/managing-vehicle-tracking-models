@@ -8,6 +8,7 @@ import (
 )
 
 var (
+    ErrInvalidVehicleID     = errors.New("invalid vehicle id")
     ErrVehicleIDEmpty       = errors.New("vehicle id is empty")
     ErrLocationEmpty        = errors.New("location is empty")
     ErrMileageEmpty         = errors.New("mileage is empty")
@@ -38,7 +39,7 @@ const (
 
 type TrackingData struct {
     ID        primitive.ObjectID `json:"id,omitempty" bson:"_id,omitempty"`
-    VehicleID string             `json:"vehicle_id"`
+    VehicleID primitive.ObjectID `json:"vehicle_id"`
     Location  string             `json:"location"`
     // since mileage can be a float value and it can be a large number, we will use float64
     Mileage       float64       `json:"mileage"`
@@ -49,8 +50,41 @@ type TrackingData struct {
     DeletedAt     *time.Time    `json:"deleted_at,omitempty" bson:"deleted_at,omitempty"`
 }
 
+func NewTrackingData() *TrackingData {
+    return &TrackingData{}
+}
+
+func (t *TrackingData) SetVehicleID(hex string) (*TrackingData, error) {
+    var err error
+    t.VehicleID, err = primitive.ObjectIDFromHex(hex)
+    if err != nil {
+        return nil, ErrInvalidVehicleID
+    }
+    return t, nil
+}
+
+func (t *TrackingData) SetLocation(location string) *TrackingData {
+    t.Location = location
+    return t
+}
+
+func (t *TrackingData) SetMileage(mileage float64) *TrackingData {
+    t.Mileage = mileage
+    return t
+}
+
+func (t *TrackingData) SetStatus(status VehicleStatus) *TrackingData {
+    t.Status = status
+    return t
+}
+
+func (t *TrackingData) SetFuelCondition(fuelCondition FuelCondition) *TrackingData {
+    t.FuelCondition = fuelCondition
+    return t
+}
+
 func (t *TrackingData) Validate() error {
-    if t.VehicleID == "" {
+    if t.VehicleID.IsZero() {
         return ErrVehicleIDEmpty
     }
     if t.Location == "" {
@@ -103,11 +137,38 @@ type TrackingDataRequest struct {
 }
 
 func (t *TrackingDataRequest) Validate() error {
-    if err := t.FuelCondition.Valid(); err != nil {
-        return err
+    if t.VehicleID == "" {
+        return ErrVehicleIDEmpty
+    }
+    _, err := primitive.ObjectIDFromHex(t.VehicleID)
+    if err != nil {
+        return ErrInvalidVehicleID
+    }
+    if t.Location == "" {
+        return ErrLocationEmpty
+    }
+    if t.Mileage == 0 {
+        return ErrMileageEmpty
     }
     if err := t.Status.Valid(); err != nil {
         return err
     }
+    if err := t.FuelCondition.Valid(); err != nil {
+        return err
+    }
     return nil
+}
+
+func (t *TrackingDataRequest) ToTrackingData() (*TrackingData, error) {
+    vehicleID, err := primitive.ObjectIDFromHex(t.VehicleID)
+    if err != nil {
+        return nil, ErrInvalidVehicleID
+    }
+    return &TrackingData{
+        VehicleID:     vehicleID,
+        Location:      t.Location,
+        Mileage:       t.Mileage,
+        Status:        t.Status,
+        FuelCondition: t.FuelCondition,
+    }, nil
 }
