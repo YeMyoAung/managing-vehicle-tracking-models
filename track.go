@@ -92,3 +92,22 @@ func (t *TrackingData) Check() error {
     }
     return t.Validate()
 }
+
+// TrackingDataRequest is not a model, but we will put it here for consistency
+type TrackingDataRequest struct {
+    VehicleID     string        `json:"vehicle_id" validate:"required"`
+    Location      string        `json:"location" validate:"required"`
+    Mileage       float64       `json:"mileage" validate:"required"`
+    Status        VehicleStatus `json:"status" validate:"required"`
+    FuelCondition FuelCondition `json:"fuel_condition" validate:"required"`
+}
+
+func (t *TrackingDataRequest) Validate() error {
+    if err := t.FuelCondition.Valid(); err != nil {
+        return err
+    }
+    if err := t.Status.Valid(); err != nil {
+        return err
+    }
+    return nil
+}
