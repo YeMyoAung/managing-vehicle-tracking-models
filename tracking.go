@@ -39,12 +39,12 @@ const (
 
 type TrackingData struct {
     ID        primitive.ObjectID `json:"id,omitempty" bson:"_id,omitempty"`
-    VehicleID primitive.ObjectID `json:"vehicle_id"`
-    Location  string             `json:"location"`
+    VehicleID primitive.ObjectID `json:"vehicle_id" bson:"vehicle_id"`
+    Location  string             `json:"location" bson:"location"`
     // since mileage can be a float value and it can be a large number, we will use float64
-    Mileage       float64       `json:"mileage"`
-    Status        VehicleStatus `json:"status"`
-    FuelCondition FuelCondition `json:"fuel_condition"`
+    Mileage       float64       `json:"mileage" bson:"mileage"`
+    Status        VehicleStatus `json:"status" bson:"status"`
+    FuelCondition FuelCondition `json:"fuel_condition" bson:"fuel_condition"`
     CreatedAt     time.Time     `json:"created_at" bson:"created_at"`
     UpdatedAt     time.Time     `json:"updated_at" bson:"updated_at"`
     DeletedAt     *time.Time    `json:"deleted_at,omitempty" bson:"deleted_at,omitempty"`
