@@ -43,6 +43,8 @@ func (e Email) Validate() error {
 
 type Role string
 
+// Validate checks if the role is valid
+// Since golang doesn't have enums, we need to validate the role
 func (r Role) Validate() error {
     if r == "" {
         return ErrRoleEmpty

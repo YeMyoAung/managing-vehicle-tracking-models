@@ -18,6 +18,8 @@ var (
 
 type FuelCondition string
 
+// Valid checks if the fuel condition is valid
+// Since golang doesn't have enums, we need to validate the fuel condition 
 func (f FuelCondition) Valid() error {
     if f == "" {
         return ErrFuelConditionEmpty

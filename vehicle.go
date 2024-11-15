@@ -17,6 +17,8 @@ var (
 
 type VehicleStatus string
 
+// Valid checks if the status is valid
+// Since golang doesn't have enums, we need to validate the status 
 func (v VehicleStatus) Valid() error {
     if v == "" {
         return ErrVehicleStatusEmpty
