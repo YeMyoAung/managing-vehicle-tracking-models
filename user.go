@@ -145,3 +145,14 @@ func (u *User) Claim() *jwt.StandardClaims {
         NotBefore: time.Now().Unix(),
     }
 }
+
+// AuthUser represents the authenticated user
+type AuthUser struct {
+    Data struct {
+        Id        string    `json:"id"`
+        Email     string    `json:"email"`
+        Role      string    `json:"role"`
+        CreatedAt time.Time `json:"created_at"`
+        UpdatedAt time.Time `json:"updated_at"`
+    } `json:"data"`
+}
